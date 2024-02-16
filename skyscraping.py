@@ -33,7 +33,7 @@ def get_headers(tree):
     """String -> [ListOf String]
         Takes a parse tree from any basketball-reference player stats page 
         and returns a list of column headers for that page"""
-    return get_row(tree.tr.find_all('th'))
+    return get_row(tree.tr.find_all('th'))[1:]
 
 
 def get_all_player_data(tree):
@@ -43,7 +43,7 @@ def get_all_player_data(tree):
         One row per player. If a player has played for multiple teams, the TOT 
         entry is returned"""  
     players_tree = [player for player in tree.find_all('tr')[1:] if player['class']==['full_table']]
-    return [get_row(p) for p in players_tree]
+    return [get_row(p.find_all('td')) for p in players_tree]
 
 
 def get_row(row_tree):
@@ -80,3 +80,4 @@ bb_advanced_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_advanc
 
 export(bb_advanced_2024, "player_advanced.csv")
 export(bb_totals_2024, "player_total")
+
