@@ -1,6 +1,9 @@
 """
 This script extracts player data from basketball-reference. 
-It works for any player data page for any season. """
+It works for any player data page for any season, such as totals, advanced, etc.
+Data is returned in CSV tabular format.
+User selects the URL and target filename.
+"""
 
 
 import requests
@@ -51,7 +54,7 @@ def get_row(row_tree):
     return [el.text for el in row_tree]
 
 
-def export(url, filename):
+def export(url, filename='player_data.csv'):
     """String String -> None
         Takes a URL for any basketball-reference player stats page
         and generates a CSV file containing a table of player data 
