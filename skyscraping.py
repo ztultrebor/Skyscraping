@@ -2,7 +2,7 @@
 This script extracts player data from basketball-reference. 
 It works for any player data page for any season, such as totals, advanced, etc.
 Data is returned in CSV tabular format.
-User selects the URL and target filename.
+User selects the URL and can choose the target filename.
 """
 
 
@@ -51,10 +51,10 @@ def get_row(row_tree):
         Takes a parse tree for an individual row (inc. the header row) of 
         an html/xml table in which the interesting data is stored as text entries, 
         and returns those text entries as a list"""    
-    return [el.text for el in row_tree]
+    return [el.string for el in row_tree]
 
 
-def export(url, filename='player_data.csv'):
+def export(url, filename):
     """String String -> None
         Takes a URL for any basketball-reference player stats page
         and generates a CSV file containing a table of player data 
@@ -78,5 +78,5 @@ def export(url, filename='player_data.csv'):
 bb_totals_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_totals.html'
 bb_advanced_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_advanced.html'
 
-export(bb_advanced_2024, "bb_advanced.csv")
-export(bb_totals_2024, "bb_totals")
+export(bb_advanced_2024, "player_advanced.csv")
+export(bb_totals_2024, "player_total")
