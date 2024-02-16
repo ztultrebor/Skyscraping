@@ -1,3 +1,8 @@
+"""
+This script extracts player data from basketball-reference. 
+It works for any player data page for any season. """
+
+
 import requests
 from bs4 import BeautifulSoup
 import csv
@@ -23,14 +28,14 @@ def parse(page, parser='html.parser'):
 
 def get_headers(tree):
     """String -> [ListOf String]
-        Takes a parse tree for a basketball-reference advanced player stats page 
+        Takes a parse tree from any basketball-reference player stats page 
         and returns a list of column headers for that page"""
     return get_row(tree.tr.find_all('th'))
 
 
 def get_all_player_data(tree):
     """String -> [ListOf String]
-        Takes a parse tree for a basketball-reference advanced player stats page 
+        Takes a parse tree for any basketball-reference player stats page 
         and returns a table of player data for every player listed on that page.
         One row per player. If a player has played for multiple teams, the TOT 
         entry is returned"""  
@@ -46,22 +51,29 @@ def get_row(row_tree):
     return [el.text for el in row_tree]
 
 
-def export(url):
-    """String -> None
-        Takes a URL for advanced basketball stats from basketball-reference 
-        and generates a CSV file containing player data in the enclosing folder"""
-    page_parse_tree = parse(get_page(br_advanced_2024))
+def export(url, filename):
+    """String String -> None
+        Takes a URL for any basketball-reference player stats page
+        and generates a CSV file containing a table of player data 
+        saved to the provided filename in the enclosing folder"""
+    if filename[-4:] != '.csv':
+        filename += '.csv'
+    page_parse_tree = parse(get_page(url))
     headers = get_headers(page_parse_tree)
     data = get_all_player_data(page_parse_tree)
-    with open('advanced.csv', 'w', newline='') as csvfile:
+    with open(filename, 'w', newline='') as csvfile:
         transcription = csv.writer(csvfile, delimiter=',')
         transcription.writerow(headers)
         for row in data:
             transcription.writerow(row)
 
+
+
 #=====================
 # action!
 
+bb_totals_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_totals.html'
+bb_advanced_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_advanced.html'
 
-br_advanced_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_advanced.html'
-export(br_advanced_2024)
+export(bb_advanced_2024, "bb_advanced.csv")
+export(bb_totals_2024, "bb_totals")
