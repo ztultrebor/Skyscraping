@@ -24,24 +24,25 @@ def get_headers(tree):
     """String -> [ListOf String]
         Takes a parse tree for a basketball-reference advanced player stats page 
         and returns a list of column headers for that page"""
-    return [s.text for s in tree.tr.find_all('th')]
+    return get_row(tree.tr.find_all('th'))
 
 
 def get_all_player_data(tree):
     """String -> [ListOf String]
         Takes a parse tree for a basketball-reference advanced player stats page 
-        and returns a table of player data for every player listed on that page"""
+        and returns a table of player data for every player listed on that page.
+        One row per player. If a player has played for multiple teams, the TOT 
+        entry is returned"""  
     players_tree = [player for player in tree.find_all('tr')[1:] if player['class']==['full_table']]
-    return [get_player_data(p) for p in players_tree]
+    return [get_row(p) for p in players_tree]
 
 
-def get_player_data(player_tree):
+def get_row(row_tree):
     """String -> [ListOf String]
-        Takes a parse tree for a specific player's entry in the basketball-reference 
-        advanced player stats page and returns a list of data for that player.
-        One frow per player. If a player has played for multiple teams, the TOT 
-        entry is returned"""    
-    return [p.text for p in player_tree]
+        Takes a parse tree for an individual row (inc. the header row) of 
+        an html/xml table in which the interesting data is stired as text entries, 
+        and returns those text entries as a list"""    
+    return [el.text for el in row_tree]
 
 
 
@@ -57,4 +58,4 @@ headers = get_headers(page_parse_tree)
 
 data = get_all_player_data(page_parse_tree)
 
-print(data)
+print(headers)
