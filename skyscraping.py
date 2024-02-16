@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 
 
@@ -40,22 +41,27 @@ def get_all_player_data(tree):
 def get_row(row_tree):
     """String -> [ListOf String]
         Takes a parse tree for an individual row (inc. the header row) of 
-        an html/xml table in which the interesting data is stired as text entries, 
+        an html/xml table in which the interesting data is stored as text entries, 
         and returns those text entries as a list"""    
     return [el.text for el in row_tree]
 
 
+def export(url):
+    """String -> None
+        Takes a URL for advanced basketball stats from basketball-reference 
+        and generates a CSV file containing player data in the enclosing folder"""
+    page_parse_tree = parse(get_page(br_advanced_2024))
+    headers = get_headers(page_parse_tree)
+    data = get_all_player_data(page_parse_tree)
+    with open('advanced.csv', 'w', newline='') as csvfile:
+        transcription = csv.writer(csvfile, delimiter=',')
+        transcription.writerow(headers)
+        for row in data:
+            transcription.writerow(row)
 
 #=====================
 # action!
 
 
 br_advanced_2024 = 'https://www.basketball-reference.com/leagues/NBA_2024_advanced.html'
-
-page_parse_tree = parse(get_page(br_advanced_2024))
-
-headers = get_headers(page_parse_tree)
-
-data = get_all_player_data(page_parse_tree)
-
-print(headers)
+export(br_advanced_2024)
